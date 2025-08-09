@@ -87,5 +87,22 @@ plt.ylabel('Survival Rate')
 plt.xlabel('Gender')
 plt.show()
 
+#survival rate of passengers by the class they were seated in
+print(data.groupby('PassengerClass')['Survived'].mean())
+
+#graphical data of the survival rate of passengers by the class they were seated in
+sns.barplot(x='PassengerClass', y='Survived', data=data)
+plt.title('Survival Rate by Passenger Class')
+plt.ylabel('Survival Rate')
+plt.xlabel('Passenger Class')
+plt.show()
+
+#graphical data of the survived passengers with the glass they were seated in with their gender
+sns.barplot(x='PassengerClass', y='Survived', hue='Sex', data=data)
+plt.title('Survival Rate by Class and Gender')
+plt.ylabel('Survival Rate')
+plt.xlabel('Passenger Class')
+plt.show()
+
 
 
