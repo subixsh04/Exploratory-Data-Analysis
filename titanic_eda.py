@@ -77,4 +77,15 @@ plt.title('Survival Distribution')
 plt.axis('equal')  # Equal aspect ratio ensures circle shape
 plt.show()
 
+#data of people who survived based on their gender
+print(data.groupby('Sex')['Survived'].mean())
+
+#graph data showing people who survived based on their gender
+sns.barplot(x='Sex', y='Survived', data=data)
+plt.title('Survival Rate by Gender')
+plt.ylabel('Survival Rate')
+plt.xlabel('Gender')
+plt.show()
+
+
 
