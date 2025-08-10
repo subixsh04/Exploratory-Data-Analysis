@@ -1,6 +1,8 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+from sklearn.model_selection import train_test_split
 
 
 #Reading the csv file
@@ -107,5 +109,76 @@ plt.ylabel('Survival Rate')
 plt.xlabel('Passenger Class')
 plt.show()
 
+#describes the mean, median, min, max etc quantities
+print(data['Age'].describe())
+
+#using a histogram to understand the survival rate of passengers across age
+sns.histplot(data['Age'], bins=30, kde=True)
+plt.title('Age Distribution of Passengers')
+plt.xlabel('Age')
+plt.ylabel('Number of Passengers')
+plt.show()
+
+#comparison of survivors in a plot across different age using boxplot
+sns.boxplot(x='Survived', y='Age', data=data)
+plt.title('Age vs Survival')
+plt.xlabel('Survived (0 = No, 1 = Yes)')
+plt.ylabel('Age')
+plt.show()
+
+#Histogram that indicates how the price of the ticket has influenced the survival of the passengers
+sns.histplot(data['Fare'], bins=30, kde=True)
+plt.title('Fare Distribution')
+plt.xlabel('Fare')
+plt.ylabel('Number of Passengers')
+plt.show()
+
+#boxplot for the price vs survival
+sns.boxplot(x='Survived', y='Fare', data=data)
+plt.title('Fare vs Survival')
+plt.xlabel('Survived (0 = No, 1 = Yes)')
+plt.ylabel('Fare')
+plt.show()
+
+#now we are moving onto training the algorithm according to our goal
+features = ['PassengerClass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+target = 'Survived'
+
+X = data[features].copy()
+y = data['Survived'] 
+
+#Label encoding for certain categories as ML doesn't process and train string data
+label_encoder = LabelEncoder()
+X['Sex'] = label_encoder.fit_transform(X['Sex'])
+
+#one-hot encoding the embarked category
+X = pd.get_dummies(X, columns=['Embarked'])
+
+#scaling the numerical cloumns
+scaler = StandardScaler()
+num_cols = ['PassengerClass', 'Age', 'SibSp', 'Parch', 'Fare']
+X[num_cols] = scaler.fit_transform(X[num_cols])
+
+#checking the first couple rows after the scaling
+print(X.head())
+
+# Create train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.20,       # 20% for testing
+    random_state=42,      # reproducible split
+    stratify=y            # preserve class proportions
+)
+
+print("X_train shape:", X_train.shape)
+print("X_test  shape:", X_test.shape)
+print("y_train shape:", y_train.shape)
+print("y_test  shape:", y_test.shape)
+
+# are class proportions similar?
+print("\nTrain class balance (%):")
+print((y_train.value_counts(normalize=True) * 100).round(2))
+print("\nTest class balance (%):")
+print((y_test.value_counts(normalize=True) * 100).round(2))
 
 
