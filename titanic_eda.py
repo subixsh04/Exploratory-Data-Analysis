@@ -343,3 +343,32 @@ print("\nTest Accuracy:", accuracy_score(y_test, y_pred_rf))
 print("ROC-AUC:", roc_auc_score(y_test, y_proba_rf))
 print("\nClassification Report:\n", classification_report(y_test, y_pred_rf))
 
+#Storing results
+results = []
+
+# Logistic Regression
+log_reg_acc = accuracy_score(y_test, y_pred)
+log_reg_auc = roc_auc_score(y_test, y_proba)
+results.append(["Logistic Regression", log_reg_acc, log_reg_auc])
+
+# Default Random Forest
+rf_default = Pipeline(steps=[
+    ("prep", preprocess),
+    ("model", RandomForestClassifier(random_state=42))
+])
+rf_default.fit(X_train, y_train)
+y_pred_rf_def = rf_default.predict(X_test)
+y_proba_rf_def = rf_default.predict_proba(X_test)[:, 1]
+results.append(["Random Forest (Default)", 
+                accuracy_score(y_test, y_pred_rf_def), 
+                roc_auc_score(y_test, y_proba_rf_def)])
+
+# Tuned Random Forest
+results.append(["Random Forest (Tuned)", 
+                accuracy_score(y_test, y_pred_rf), 
+                roc_auc_score(y_test, y_proba_rf)])
+
+# Convert to DataFrame
+comparison_df = pd.DataFrame(results, columns=["Model", "Accuracy", "ROC-AUC"])
+print(comparison_df)
+
